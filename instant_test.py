@@ -153,3 +153,38 @@ print("• Add user customization and learning")
 print()
 print("🚀 This prototype demonstrates the core functionality!")
 print("   Ready to hand off to hardware team for integration.")
+def test_real_sleep_data(edf_file_path):
+    """Test with real sleep EDF data"""
+    print("=== TESTING WITH REAL SLEEP DATA ===")
+    
+    try:
+        # Use your existing EDF loading function
+        analyzer = SleepAudioAnalyzer()  # You'll need to copy this from your earlier code
+        signals, labels, sample_rates = analyzer.load_edf_data(edf_file_path)
+        
+        print(f"Loaded EDF file with {len(labels)} channels:")
+        for i, label in enumerate(labels):
+            print(f"  {label}: {sample_rates[i]} Hz")
+        
+        # Look for audio/respiratory channels
+        audio_channels = []
+        for i, label in enumerate(labels):
+            if any(keyword in label.lower() for keyword in ['audio', 'sound', 'mic', 'emg', 'flow']):
+                audio_channels.append((i, label))
+        
+        if audio_channels:
+            print(f"Found potential audio channels: {[ch[1] for ch in audio_channels]}")
+        else:
+            print("No obvious audio channels found - these files may only contain EEG/EOG data")
+            
+        return True
+        
+    except Exception as e:
+        print(f"Error loading real data: {e}")
+        return False
+
+# Add to the end of your instant_test.py file:
+print("\n" + "="*50)
+print("Ready to test with real data!")
+print("Run: test_real_sleep_data('path/to/SC4001E0-PSG.edf')")
+import os  # Add this near the top with other imports
